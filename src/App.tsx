@@ -12,6 +12,9 @@ function App() {
   const [text, setText] = useState("");
   const [result, setResult] = useState<Result>([]);
   const [correctChecksumsText, setCorrectChecksumsText] = useState<string>("");
+  const [visibleChecksums, setVisibleChecksums] = useState(true);
+  const [showDifference, setShowDifference] = useState(true);
+
   useEffect(() => {
     const correctChecksums = correctChecksumsText
       .split("\n")
@@ -49,9 +52,9 @@ function App() {
       >
         なおちきの公開鍵
       </a>
-      <h2>年賀状チェックサム計算ツール</h2>
+      <h2>年賀状解読補助ツール</h2>
       <div className="w-full flex flex-col gap-4 items-center xl:flex-row justify-center">
-        <div className="font-mono w-full h-[35rem] max-w-5xl flex flex-col justify-center bg-slate-800 text-white p-4">
+        <div className="rounded-xl font-mono w-full h-[35rem] max-w-5xl flex flex-col justify-center bg-slate-800 text-white p-4">
           <p className="text-xl font-sans">1. 暗号文</p>
           <p className="mb-4">-----BEGIN PGP MESSAGE-----</p>
           <textarea
@@ -63,7 +66,7 @@ function App() {
           ></textarea>
           <p>-----END PGP MESSAGE-----</p>
         </div>
-        <div className="font-mono h-[30rem] max-w-5xl flex flex-col  justify-center bg-gray-100 p-4">
+        <div className="rounded-xl font-mono h-[30rem] max-w-5xl flex flex-col  justify-center bg-gray-100 p-4">
           <p className="text-xl font-sans">
             2. 年賀状のチェックサム(オプション)
           </p>
@@ -76,8 +79,32 @@ function App() {
           ></textarea>
         </div>
       </div>
-      <p>結果</p>
-      <p>あとは頑張って直してね</p>
+      <div className="text-center">
+        <p>結果</p>
+        <p>あとは頑張って直してね</p>
+      </div>
+      <div>
+        <div>
+          <input
+            type="checkbox"
+            onChange={() => setVisibleChecksums(!visibleChecksums)}
+            checked={visibleChecksums}
+            name="visibleChecksums"
+            id="visibleChecksums"
+          />
+          <label htmlFor="visibleChecksums">チェックサムの表示</label>
+        </div>
+        <div>
+          <input
+            type="checkbox"
+            onChange={() => setShowDifference(!showDifference)}
+            checked={showDifference}
+            name="showDifference"
+            id="showDifference"
+          />
+          <label htmlFor="showDifference">一致しているかどうかを表示</label>
+        </div>
+      </div>
       <div className="font-mono w-max text-sm max-w-5xl flex flex-col  justify-center bg-gray-100 p-4">
         <p className="mb-4">-----BEGIN PGP MESSAGE-----</p>
         {result.map((line, i) => (
@@ -95,7 +122,8 @@ function App() {
                   key={j}
                   className={cn(
                     "border",
-                    line.correctChecksums[j] &&
+                    showDifference &&
+                      line.correctChecksums[j] &&
                       (line.checksums[j] === line.correctChecksums[j]
                         ? "bg-green-400"
                         : "bg-red-400")
@@ -106,7 +134,10 @@ function App() {
               ))}
             </div>
             <div
-              className="grid gap-1"
+              className={cn(
+                "grid gap-1",
+                visibleChecksums ? "blovk" : "hidden"
+              )}
               style={{
                 gridTemplateColumns: `repeat(${Math.ceil(
                   64 / slice
@@ -118,9 +149,10 @@ function App() {
                   key={j}
                   className={cn(
                     "border",
-                    c === line.correctChecksums[j]
-                      ? "bg-green-400"
-                      : "bg-red-400"
+                    showDifference &&
+                      (c === line.correctChecksums[j]
+                        ? "bg-green-400"
+                        : "bg-red-400")
                   )}
                 >
                   <span className="block bg-gray-600 text-white">{c}</span>
@@ -132,16 +164,30 @@ function App() {
         ))}
         <p>-----END PGP MESSAGE-----</p>
       </div>
-      <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        onClick={() => {
-          navigator.clipboard.writeText(
-            result.map((line) => line.checksums.join(" ")).join("\n")
-          );
-        }}
-      >
-        計算されたチェックサムをコピー
-      </button>
+      <div className="flex gap-4">
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={() => {
+            navigator.clipboard.writeText(
+              `-----BEGIN PGP MESSAGE-----\n\n${result
+                .map((line) => line.blocks.join(""))
+                .join("\n")}\n-----END PGP MESSAGE-----`
+            );
+          }}
+        >
+          PGPメッセージをコピー
+        </button>
+        <button
+          className="border-2 hover:bg-slate-300 font-bold py-2 px-4 rounded"
+          onClick={() => {
+            navigator.clipboard.writeText(
+              result.map((line) => line.checksums.join(" ")).join("\n")
+            );
+          }}
+        >
+          計算されたチェックサムをコピー
+        </button>
+      </div>
     </main>
   );
 }
