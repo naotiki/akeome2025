@@ -39,7 +39,6 @@ function App() {
       object.push(lineObj);
     }
     setResult(object);
-    console.table(object);
   }, [text, correctChecksumsText, slice]);
   return (
     <main className="flex flex-col items-center justify-center min-h-screen py-2 gap-5">
