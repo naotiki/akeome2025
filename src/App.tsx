@@ -15,7 +15,7 @@ function App() {
   useEffect(() => {
     const correctChecksums = correctChecksumsText
       .split("\n")
-      .map((line) => line.split(" ")/* .filter((c) => c !== " ") */);
+      .map((line) => line.split(" ") /* .filter((c) => c !== " ") */);
 
     const arrays: string[][] = [];
     const lines = text.split("\n");
@@ -34,10 +34,7 @@ function App() {
         correctChecksums: correctChecksums[i] ?? [],
       };
       for (const block of lineBlocks) {
-        
-        lineObj.checksums.push(
-          crc8(block).toString(16).padStart(2, "0")
-        );
+        lineObj.checksums.push(crc8(block).toString(16).padStart(2, "0"));
       }
       object.push(lineObj);
     }
@@ -46,28 +43,39 @@ function App() {
   }, [text, correctChecksumsText, slice]);
   return (
     <main className="flex flex-col items-center justify-center min-h-screen py-2 gap-5">
-      <h1 className="text-5xl">あけおめ</h1>
-      <p>1. OCR結果を入力</p>
-      <div className="font-mono w-full h-[30rem] max-w-5xl flex flex-col  justify-center bg-gray-100 p-4">
-        <p className="mb-4">-----BEGIN PGP MESSAGE-----</p>
-        <textarea
-          value={text}
-          onChange={(e) => {
-            setText(e.target.value);
-          }}
-          className="h-full field-sizing-content"
-        ></textarea>
-        <p>-----END PGP MESSAGE-----</p>
-      </div>
-      <p>2. 年賀状のチェックサムを入力(オプション)</p>
-      <div className="font-mono h-[30rem] max-w-5xl flex flex-col  justify-center bg-gray-100 p-4">
-        <textarea
-          value={correctChecksumsText}
-          onChange={(e) => {
-            setCorrectChecksumsText(e.target.value);
-          }}
-          className="h-full"
-        ></textarea>
+      <h1 className="text-5xl akeome">あけおめ</h1>
+      <a
+        href="https://keys.openpgp.org/vks/v1/by-fingerprint/E6FBD0BFDB69CCCEBDDD77198A9869D6C11124B6"
+        className="text-blue-500 hover:text-blue-700 underline"
+      >
+        なおちきの公開鍵
+      </a>
+      <h2>年賀状チェックサム計算ツール</h2>
+      <div className="w-full flex flex-col gap-4 items-center xl:flex-row justify-center">
+        <div className="font-mono w-full h-[35rem] max-w-5xl flex flex-col justify-center bg-slate-800 text-white p-4">
+          <p className="text-xl font-sans">1. 暗号文</p>
+          <p className="mb-4">-----BEGIN PGP MESSAGE-----</p>
+          <textarea
+            value={text}
+            onChange={(e) => {
+              setText(e.target.value);
+            }}
+            className="h-full field-sizing-content bg-black"
+          ></textarea>
+          <p>-----END PGP MESSAGE-----</p>
+        </div>
+        <div className="font-mono h-[30rem] max-w-5xl flex flex-col  justify-center bg-gray-100 p-4">
+          <p className="text-xl font-sans">
+            2. 年賀状のチェックサム(オプション)
+          </p>
+          <textarea
+            value={correctChecksumsText}
+            onChange={(e) => {
+              setCorrectChecksumsText(e.target.value);
+            }}
+            className="h-full"
+          ></textarea>
+        </div>
       </div>
       <p>結果</p>
       <p>あとは頑張って直してね</p>
@@ -84,7 +92,16 @@ function App() {
               }}
             >
               {line.blocks.map((block, j) => (
-                <div key={j} className={cn("border", line.correctChecksums[j]&&(line.checksums[j] === line.correctChecksums[j] ? "bg-green-400" : "bg-red-400"))}>
+                <div
+                  key={j}
+                  className={cn(
+                    "border",
+                    line.correctChecksums[j] &&
+                      (line.checksums[j] === line.correctChecksums[j]
+                        ? "bg-green-400"
+                        : "bg-red-400")
+                  )}
+                >
                   {block}
                 </div>
               ))}
@@ -98,7 +115,15 @@ function App() {
               }}
             >
               {line.checksums.map((c, j) => (
-                <div key={j} className={cn("border", c === line.correctChecksums[j] ? "bg-green-400" : "bg-red-400")}>
+                <div
+                  key={j}
+                  className={cn(
+                    "border",
+                    c === line.correctChecksums[j]
+                      ? "bg-green-400"
+                      : "bg-red-400"
+                  )}
+                >
                   <span className="block bg-gray-600 text-white">{c}</span>
                   <span> {line.correctChecksums[j]}</span>
                 </div>

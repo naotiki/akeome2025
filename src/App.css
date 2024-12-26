@@ -1,0 +1,22 @@
+.akeome {
+  background: linear-gradient(
+    90deg,
+    rgba(58, 59, 180, 1) 0%,
+    rgba(253, 29, 29, 1) 30%,
+    rgba(252, 176, 69, 1) 70%,
+    rgb(69, 252, 136) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 500% auto;
+  animation: textShine 2s linear infinite alternate;
+}
+@keyframes textShine {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
