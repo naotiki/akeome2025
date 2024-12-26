@@ -43,7 +43,7 @@ function App() {
   }, [text, correctChecksumsText, slice]);
   return (
     <main className="flex flex-col items-center justify-center min-h-screen py-2 gap-5">
-      <h1 className="text-5xl akeome">あけおめ</h1>
+      <h1 className="text-5xl font-bold akeome">あけおめ</h1>
       <a
         href="https://keys.openpgp.org/vks/v1/by-fingerprint/E6FBD0BFDB69CCCEBDDD77198A9869D6C11124B6"
         className="text-blue-500 hover:text-blue-700 underline"
