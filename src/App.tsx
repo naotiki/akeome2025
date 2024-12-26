@@ -137,7 +137,7 @@ function App() {
             </label>
           </div>
         </div>
-        <div className="overflow-x-scroll w-full">
+        <div className="overflow-x-scroll max-w-full">
           <div className="w-max font-mono text-sm max-w-5xl flex flex-col  justify-center bg-gray-100 p-4">
             <p className="mb-4">-----BEGIN PGP MESSAGE-----</p>
             {result.map((line, i) => (
